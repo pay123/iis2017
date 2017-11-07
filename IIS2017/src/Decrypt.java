@@ -1,7 +1,7 @@
 import java.math.BigInteger;
 
 
-public class decript {
+public class Decrypt {
 	
 	static BigInteger buildint (String cipher){
 		

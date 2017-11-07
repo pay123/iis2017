@@ -6,23 +6,26 @@ public class decript {
 	static BigInteger buildint (String cipher){
 		
 		char[] c_char = cipher.toCharArray();
-		BigInteger c_int = BigInteger.ZERO; 
+		//BigInteger c_int = BigInteger.ZERO; 
 		
-		int[] array;
+		String number = "";
+		
 		
 	    for(char c : c_char)
 	    {
 	        int temp = (int)c;
-	        int temp_integer = 65; //for upper case
-	if(temp<=90 & temp>=65)
-	    System.out.print(temp-temp_integer);
-		
-		
-	
-		c_int.add(BigInteger.valueOf(temp-temp_integer));
+	        int temp_integer = 65; 
+	        if(temp<=90 & temp>=65){
+	        //	System.out.print(temp-temp_integer);
+	        	int num = temp-temp_integer;
+	        	number = number + num;
+	   
+	        }
 		
 	    }
-		
+	  //  System.out.println("");
+	  //  System.out.println(number);
+	    BigInteger c_int = new BigInteger(number); 
 		
 		return c_int;
 	}
@@ -32,9 +35,10 @@ public class decript {
 
 		
 		BigInteger c  = buildint("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		//buildint("ZZZZZZZZZZZZZZZAAAAAAAAAAAA");
-		System.out.println("");
+		BigInteger c1 = buildint("HALLOHALLOHALLO");
+		
 		System.out.println(c);
+		System.out.println(c1);
 		
 	}
 

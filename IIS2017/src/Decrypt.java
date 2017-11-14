@@ -12,6 +12,7 @@ import static java.lang.Math.pow;
 
 public class Decrypt
 {
+    public static final BigInteger C = new BigInteger("62178202313241623222061");
     public static final BigInteger E = BigInteger.valueOf(65537);
     public static final BigInteger N = new BigInteger("581696833723949335177");
 
@@ -20,6 +21,8 @@ public class Decrypt
         char[] cipher = s.toCharArray();
         StringBuilder m = new StringBuilder();
         StringBuilder c = new StringBuilder();
+
+
 
         int i = 0;
         for (char u : cipher)
@@ -39,6 +42,25 @@ public class Decrypt
     public static void main(String[] args)
     {
         buildInt("GVHIUXNYQXWUGB");
+
+        Helper helper = new Helper();
+        BigInteger p = helper.factor(new BigInteger("581696833723949335177"));
+        System.out.println("p: " + p);
+        BigInteger q = new BigInteger("581696833723949335177").divide(p);
+        System.out.println("q: " + q);
+
+        BigInteger phi_n = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+
+        BigInteger d = E.modInverse(phi_n);
+
+        System.out.println("d: " + d);
+
+        BigInteger m = C.modPow(d, N);
+        System.out.println("m: " + m);
+
+
+
+
 //        computeRSAFactors(E, N);
     }
 

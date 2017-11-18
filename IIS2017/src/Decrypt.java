@@ -12,7 +12,7 @@ public class Decrypt
 	private static BigInteger encode(String s)
     {
         char[] cipher = s.toCharArray();
-        StringBuilder m = new StringBuilder();
+        BigInteger f = BigInteger.valueOf(26);
 
         BigInteger b = BigInteger.ZERO;
 
@@ -21,12 +21,11 @@ public class Decrypt
         {
             if (u >= 'A' && u <= 'Z')
             {
-                m.append(new BigDecimal((u - 'A') * pow(26, i)).toBigInteger());
-                b = b.add(BigInteger.valueOf(u - 'A'));
+                b = b.add(BigInteger.valueOf(u - 'A').multiply(f.pow(i)));
             }
             i++;
         }
-        return new BigInteger(m.toString());
+        return b;
     }
 
     private static String decode(BigInteger s)
@@ -68,7 +67,13 @@ public class Decrypt
             k--;
         }
 
-        return m.toString();
+        StringBuilder message = new StringBuilder();
+        for (int i = m.toString().length()-1; i >= 0; i--)
+        {
+            message.append(m.toString().charAt(i));
+        }
+
+        return message.toString();
     }
 
     private static BigInteger factor(BigInteger number)
@@ -120,5 +125,8 @@ public class Decrypt
 //        BigInteger k = BigInteger.valueOf(CIPHERTEXT.length()-1);
 //
 //        System.out.println(m.modPow(BigInteger.ONE.add(phi_n.multiply(k).mod(phi_n)), N));
+
+//        System.out.println("Encode FGK ... " + encode("FGK"));
+//        System.out.println("Decode 6921 ... " + decode(BigInteger.valueOf(6921)));
     }
 }

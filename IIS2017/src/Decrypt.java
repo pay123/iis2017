@@ -1,52 +1,107 @@
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Random;
 
 import static java.lang.Math.pow;
 
-// pubkey (e, n) = (65537, 581696833723949335177)
-// private key d?
-
-// https://stackoverflow.com/questions/16310871/in-rsa-encryption-how-do-i-find-d-given-p-q-e-and-c
-// d = e.modInverse(p_1.multiply(q_1))
-
 public class Decrypt
 {
-    public static final BigInteger C = new BigInteger("62178202313241623222061");
     public static final BigInteger E = BigInteger.valueOf(65537);
     public static final BigInteger N = new BigInteger("581696833723949335177");
+    public static final String CIPHERTEXT = "GVHIUXNYQXWUGB";
 
-	private static void buildInt(String s)
+	private static BigInteger encode(String s)
     {
         char[] cipher = s.toCharArray();
         StringBuilder m = new StringBuilder();
-        StringBuilder c = new StringBuilder();
 
-
+        BigInteger b = BigInteger.ZERO;
 
         int i = 0;
         for (char u : cipher)
         {
             if (u >= 'A' && u <= 'Z')
             {
-                c.append(u - 'A');
                 m.append(new BigDecimal((u - 'A') * pow(26, i)).toBigInteger());
+                b = b.add(BigInteger.valueOf(u - 'A'));
             }
             i++;
         }
-
-        System.out.println("c: " + c);
-        System.out.println("m: " + m);
+        return new BigInteger(m.toString());
     }
-	
+
+    private static String decode(BigInteger s)
+    {
+        StringBuilder m = new StringBuilder();
+        BigInteger f = BigInteger.valueOf(26);
+        Integer k = 0;
+
+        while (s.divide(f.pow(k)).compareTo(BigInteger.ONE) >= 0)
+        {
+//            System.out.println(f.pow(k) + " < " + s);
+            k++;
+        }
+        k--;
+
+        System.out.println("k: " + k);
+
+
+        while (k >= 0)
+        {
+            BigInteger letter = BigInteger.ZERO;
+
+            while (letter.multiply(f.pow(k)).compareTo(s) < 1)
+            {
+                BigInteger tmp = letter.multiply(f.pow(k));
+
+                letter = letter.add(BigInteger.ONE);
+
+//                if (letter.compareTo(BigInteger.valueOf(25)) == 0)
+//                {
+//                    break;
+//                }
+            }
+            letter = letter.subtract(BigInteger.ONE);
+
+            m.append((char)(letter.intValue() + 'A'));
+
+            s = s.subtract(letter.multiply(f.pow(k)));
+            k--;
+        }
+
+        return m.toString();
+    }
+
+    private static BigInteger factor(BigInteger number)
+    {
+        BigInteger xFixed = BigInteger.valueOf(2);
+        BigInteger x = BigInteger.valueOf(2);
+        BigInteger cycleSize = BigInteger.valueOf(2);
+        BigInteger factor = BigInteger.ONE;
+        BigInteger count;
+
+        while (factor.equals(BigInteger.ONE))
+        {
+            count = BigInteger.ONE;
+            while(count.compareTo(cycleSize) < 1 && factor.compareTo(BigInteger.ONE) < 1)
+            {
+                x = (x.multiply(x.add(BigInteger.ONE))).mod(number);
+                factor = number.gcd(x.subtract(xFixed));
+                count = count.add(BigInteger.ONE);
+            }
+
+            cycleSize = cycleSize.multiply(BigInteger.valueOf(2));
+            xFixed = x;
+        }
+        return factor;
+    }
+
     public static void main(String[] args)
     {
-        buildInt("GVHIUXNYQXWUGB");
+        BigInteger c = encode(CIPHERTEXT);
 
-        Helper helper = new Helper();
-        BigInteger p = helper.factor(new BigInteger("581696833723949335177"));
+        BigInteger p = factor(N);
         System.out.println("p: " + p);
-        BigInteger q = new BigInteger("581696833723949335177").divide(p);
+        BigInteger q = N.divide(p);
         System.out.println("q: " + q);
 
         BigInteger phi_n = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
@@ -55,60 +110,15 @@ public class Decrypt
 
         System.out.println("d: " + d);
 
-        BigInteger m = C.modPow(d, N);
+        BigInteger m = c.modPow(d, N);
         System.out.println("m: " + m);
 
+        System.out.println("Decoding " + m + " ... " + decode(m));
 
+//        System.out.println("Decoding " + 6921 + " ... " + decode(BigInteger.valueOf(6921)));
 
-
-//        computeRSAFactors(E, N);
+//        BigInteger k = BigInteger.valueOf(CIPHERTEXT.length()-1);
+//
+//        System.out.println(m.modPow(BigInteger.ONE.add(phi_n.multiply(k).mod(phi_n)), N));
     }
-
-    private static void computeRSAFactors(BigInteger e, BigInteger n)
-    {
-//        n = BigInteger.valueOf(10142789312725007L);
-//        e = BigInteger.valueOf(8114231289041741L);
-        final BigInteger d = BigInteger.valueOf(5);
-
-        final long t0 = System.currentTimeMillis();
-
-        final BigInteger kTheta = d.multiply(e).subtract(BigInteger.ONE);
-        final int exponentOfTwo = kTheta.getLowestSetBit();
-
-        final Random random = new Random();
-        BigInteger factor = BigInteger.ONE;
-        do
-        {
-            final BigInteger a = nextA(n, random);
-
-            for (int i = 1; i <= exponentOfTwo; i++)
-            {
-                final BigInteger exponent = kTheta.shiftRight(i);
-                final BigInteger power = a.modPow(exponent, n);
-
-                final BigInteger gcd = n.gcd(power.subtract(BigInteger.ONE));
-                if (!factor.equals(BigInteger.ONE))
-                {
-                    break;
-                }
-            }
-        }
-        while (factor.equals(BigInteger.ONE));
-
-        final long t1 = System.currentTimeMillis();
-
-        System.out.printf("%s %s (%dms)\n", factor, n.divide(factor), t1 - t0);
-    }
-
-    private static BigInteger nextA(final BigInteger n, final Random random)
-    {
-        BigInteger r;
-        do
-        {
-            r = new BigInteger(n.bitLength(), random);
-        }
-        while (r.signum() == 0 || r.compareTo(n) >= 0);
-        return r;
-    }
-
 }

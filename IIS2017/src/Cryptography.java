@@ -1,15 +1,8 @@
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static java.lang.Math.pow;
-
-public class Decrypt
+public class Cryptography
 {
-    public static final BigInteger E = BigInteger.valueOf(65537);
-    public static final BigInteger N = new BigInteger("581696833723949335177");
-    public static final String CIPHERTEXT = "GVHIUXNYQXWUGB";
-
-	private static BigInteger encode(String s)
+	public BigInteger encode(String s)
     {
         char[] cipher = s.toCharArray();
         BigInteger f = BigInteger.valueOf(26);
@@ -28,7 +21,7 @@ public class Decrypt
         return b;
     }
 
-    private static String decode(BigInteger s)
+    public String decode(BigInteger s)
     {
         StringBuilder m = new StringBuilder();
         BigInteger f = BigInteger.valueOf(26);
@@ -76,7 +69,7 @@ public class Decrypt
         return message.toString();
     }
 
-    private static BigInteger factor(BigInteger number)
+    public BigInteger factor(BigInteger number)
     {
         BigInteger xFixed = BigInteger.valueOf(2);
         BigInteger x = BigInteger.valueOf(2);
@@ -98,35 +91,5 @@ public class Decrypt
             xFixed = x;
         }
         return factor;
-    }
-
-    public static void main(String[] args)
-    {
-        BigInteger c = encode(CIPHERTEXT);
-
-        BigInteger p = factor(N);
-        System.out.println("p: " + p);
-        BigInteger q = N.divide(p);
-        System.out.println("q: " + q);
-
-        BigInteger phi_n = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
-
-        BigInteger d = E.modInverse(phi_n);
-
-        System.out.println("d: " + d);
-
-        BigInteger m = c.modPow(d, N);
-        System.out.println("m: " + m);
-
-        System.out.println("Decoding " + m + " ... " + decode(m));
-
-//        System.out.println("Decoding " + 6921 + " ... " + decode(BigInteger.valueOf(6921)));
-
-//        BigInteger k = BigInteger.valueOf(CIPHERTEXT.length()-1);
-//
-//        System.out.println(m.modPow(BigInteger.ONE.add(phi_n.multiply(k).mod(phi_n)), N));
-
-//        System.out.println("Encode FGK ... " + encode("FGK"));
-//        System.out.println("Decode 6921 ... " + decode(BigInteger.valueOf(6921)));
     }
 }

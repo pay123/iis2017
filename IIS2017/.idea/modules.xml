@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IIS.iml" filepath="$PROJECT_DIR$/.idea/modules/IIS.iml" />
       <module fileurl="file://$PROJECT_DIR$/IIS2017.iml" filepath="$PROJECT_DIR$/IIS2017.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IIS_main.iml" filepath="$PROJECT_DIR$/.idea/modules/IIS_main.iml" group="IIS" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IIS_test.iml" filepath="$PROJECT_DIR$/.idea/modules/IIS_test.iml" group="IIS" />
     </modules>
   </component>
 </project>

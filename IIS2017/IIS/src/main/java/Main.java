@@ -78,43 +78,7 @@ public class Main
 
             lower[i] = (byte)(0xff & (b1 ^ b2 ^ b3 ^ b4));
         }
-
-//        int i = 0;
-//        for (byte b1 : blocks.get(4))
-//        {
-//            for (byte b2 : blocks.get(5))
-//            {
-//                for (byte b3 : blocks.get(6))
-//                {
-//                    for (byte b4 : blocks.get(7))
-//                    {
-//                        int xor = (int)b1 ^ (int)b2 ^ (int)b3 ^ (int)b4;
-//
-////                        upper[i] = (byte)(0xff & xor);
-//                        i++;
-//                    }
-//                }
-//            }
-//        }
-//
-//        int j = 0;
-//        for (byte b1 : blocks.get(0))
-//        {
-//            for (byte b2 : blocks.get(1))
-//            {
-//                for (byte b3 : blocks.get(2))
-//                {
-//                    for (byte b4 : blocks.get(3))
-//                    {
-//                        int xor = (int)b1 ^ (int)b2 ^ (int)b3 ^ (int)b4;
-//
-////                        lower[j] = (byte)(0xff & xor);
-//                        j++;
-//                    }
-//                }
-//            }
-//        }
-
+        
         byte[] bytes = new byte[upper.length + lower.length];
         System.arraycopy(upper, 0, bytes, 0, upper.length);
         System.arraycopy(lower, 0, bytes, upper.length, lower.length);

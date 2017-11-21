@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class Main
 //        System.out.println(HashCode.fromBytes(bytes).toString());
 
 //        return HashCode.fromBytes(bytes).asInt();
-        return HashCode.fromBytes(upper).toString();
+        return HashCode.fromBytes(bytes).toString();
 //        return HashCode.fromBytes(upper).asInt();
     }
 
@@ -145,52 +146,92 @@ public class Main
         return xs;
     }
 
-    private static Pair<Integer, Integer> brentsAlgorithm(String x0)
+//    private static Pair<Integer, Integer> brentsAlgorithm(String x0)
+//    {
+//        int i = 0;
+//        int l = 1;
+//        String m = x0;
+//        String x = x0;
+//
+//        while (true)
+//        {
+//            i++;
+//            x = h(x);
+//            if (x.equals(m))
+//            {
+//                break;
+//            }
+//            if (i >= (2 * l - 1))
+//            {
+//                m = x;
+//                l = 2 * l;
+//                while ((double)i < ((double)(3 / 2) * l - 1))
+//                {
+//                    x = h(x);
+//                    i++;
+//                }
+//            }
+//        }
+//        return new Pair<>(i, l - 1);
+//    }
+
+    private static Pair<BigInteger, BigInteger> brentsAlgorithm(String x0)
     {
-        int i = 0;
-        int l = 1;
+        BigInteger i = BigInteger.ZERO;
+        BigInteger l = BigInteger.ONE;
         String m = x0;
         String x = x0;
 
         while (true)
         {
-            i++;
+            i = i.add(BigInteger.ONE);
             x = h(x);
             if (x.equals(m))
             {
                 break;
             }
-            if (i >= (2 * l - 1))
+            if (i.compareTo(BigInteger.valueOf(2).multiply(l).subtract(BigInteger.ONE)) >= 0)//(i >= (2 * l - 1))
             {
                 m = x;
-                l = 2 * l;
-                while ((double)i < ((double)(3 / 2) * l - 1))
-                {
-                    x = h(x);
-                    i++;
-                }
+                l = l.multiply(BigInteger.valueOf(2)); //2 * l;
+//                BigDecimal j = new BigDecimal(i);
+//
+//                BigDecimal three = BigDecimal.valueOf(3);
+//                BigDecimal two = BigDecimal.valueOf(2);
+//
+//                BigDecimal tmp = three.divide(two, 4, BigDecimal.ROUND_HALF_UP);
+//                tmp = tmp.multiply(new BigDecimal(l)).subtract(BigDecimal.ONE);
+//                while (j.compareTo(tmp) < 0)//((double)i < ((double)(3 / 2) * l - 1))
+//                {
+//                    x = h(x);
+//                    i = i.add(BigInteger.ONE);
+//                }
             }
         }
-        return new Pair<>(i, l - 1);
+        return new Pair<>(i, l.subtract(BigInteger.ONE));
     }
 
     private static void hashCollisionSearch()
     {
-        String x = "015301234015305678015311234015315678";
-//        List<String> S = new ArrayList<>();
+        String prefix = "011312560133036901330387";
+        String x = prefix;
 
         HashMap<String, String> S = new HashMap<>();
 
-        Pair<Integer, Integer> p = brentsAlgorithm(x);
+        Pair<BigInteger, BigInteger> p = brentsAlgorithm(x);
+//        Pair<Integer, Integer> p = brentsAlgorithm(x);
         System.out.println("i: " + p.getKey() + ", j: " + p.getValue());
 
-        int i;
-        for (i = 0; i < p.getKey(); i++)
+        BigInteger key = p.getKey();
+        BigInteger value = p.getValue();
+//        BigInteger key = BigInteger.valueOf(p.getKey());
+//        BigInteger value = BigInteger.valueOf(p.getValue());
+
+        for (BigInteger i = BigInteger.ZERO; i.compareTo(key) < 0; i = i.add(BigInteger.ONE))
         {
-            String xs = "015301234015305678015311234015315678" + x;
+            String xs = prefix + x;
             x = h(xs);
-//            x = h("015301234015305678015311234015315678" + x);
-            if (i < p.getValue())
+            if (i.compareTo(value) < 0)
             {
 //                S.add(x);
                 S.put(x, xs);
@@ -208,46 +249,6 @@ public class Main
                 S.put(x, xs);
             }
         }
-
-////        System.out.println("x' = " + meetInTheMiddleAttack(""));
-//
-//        String x = "123123123123";
-//        String xs = "123123123123";
-//        String x0 = "123123123123";
-//        int i;
-//        for (i = 0; i <= pow(2, 16); i++)
-//        {
-//            x = h(x);
-//            xs = h(h(xs));
-//
-////            System.out.println(x + " : " + xs);
-//
-//            if (x.equals(xs))
-//            {
-//                break;
-//            }
-//        }
-//
-//        if (!x.equals(xs))
-//        {
-//            System.out.println("FAIL");
-//            return;
-//        }
-//        xs = x;
-//        x = x0;
-//        for (int j = 1; j < i; j++)
-//        {
-//            if (h(x).equals(h(xs)))
-//            {
-//                System.out.println(x0 + " : " + x);
-//                System.out.println(h(x0));
-//                System.out.println(h(x));
-//
-//                break;
-//            }
-//            x = h(x);
-//            xs = h(xs);
-//        }
     }
 
     public static void main(String[] args)
